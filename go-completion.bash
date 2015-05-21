@@ -1,5 +1,6 @@
-# Bash completion rule for golang.
-# Copyright 2015 Makoto Onuki
+# Bash completion for golang.  Copyright 2015 Makoto Onuki
+#
+# Usage: source go-completion.bash
 
 function _go_complete() {
   local -A _go_flags
