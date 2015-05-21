@@ -68,5 +68,3 @@ _godoc_complete() {
 
 complete -o filenames -o bashdefault -F _go_complete go
 complete -o filenames -o bashdefault -F _godoc_complete godoc
-
-echo OK
