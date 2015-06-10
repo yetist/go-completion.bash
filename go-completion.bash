@@ -1,5 +1,25 @@
-# Bash completion for golang.  Copyright 2015 Makoto Onuki
+# The MIT License (MIT)
 #
+# Copyright (c) 2015 Makoto Onuki
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+# #
 # Usage: source go-completion.bash
 
 # Update this script.
@@ -20,8 +40,17 @@ _go_complete() {
 
   local cand=""
   case "$prev" in
-    "go")
-      cand="build clean env fix fmt get install list run test tool version vet"
+    go|goapp)
+      cand="build clean env fix fmt get install list run test tool version vet help"
+      if [ "$cmd" = "goapp" ]; then
+        cand="$cand serve deploy"
+      fi
+      ;;
+    help)
+      cand="build clean env fix fmt generate get install list run test tool version vet c filetype gopath importpath packages testflag testfunc"
+      if [ "$cmd" = "goapp" ]; then
+        cand="$cand serve deploy"
+      fi
       ;;
     *)
       case "$cur" in
@@ -38,6 +67,8 @@ _go_complete() {
             test)     cand="-i -c -exec -o ${_go_build_flags} ${_go_test_flags}" ;;
             tool)     cand="-n" ;;
             vet)      cand="-n -x" ;;
+            serve)    cand="-host -port -admin_port -clear_datastore" ;;
+            deploy)   cand="-application -version -oauth" ;;
           esac
           ;;
       esac
@@ -67,4 +98,5 @@ _godoc_complete() {
 }
 
 complete -o filenames -o bashdefault -F _go_complete go
+complete -o filenames -o bashdefault -F _go_complete goapp
 complete -o filenames -o bashdefault -F _godoc_complete godoc
