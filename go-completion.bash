@@ -71,8 +71,17 @@ _go_complete() {
             deploy)   cand="-application -version -oauth" ;;
           esac
           ;;
-      esac
-      ;;
+        *)
+          case "$sub" in
+            build)
+                    files=$(find ${PWD} -mindepth 1 -maxdepth 1 -type f -iname "*.go" -exec basename {} \;)
+                    dirs=$(find ${PWD} -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+                    cand="${files} ${dirs}"
+                    ;;
+          esac
+        ;;
+        esac
+        ;;
   esac
   if [ "x$cand" = "x" ] ; then
     COMPREPLY=($(compgen -f -- ${cur}))
