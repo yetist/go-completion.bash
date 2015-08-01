@@ -85,18 +85,24 @@ _godoc_complete() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
 
   local cand=""
+  local GOROOT=`go env GOROOT`
+  local GOPATH=`go env GOPATH`
+  local root_sn=`echo $GOROOT|awk -F/ '{print NF}'`
+  local path_sn=`echo $GOPATH|awk -F/ '{print NF}'`
   case "$cur" in
     -*)
       cand="-v -q -src -tabwidth -timestamps -index -index_files -index_throttle -links -write_index -index_files -maxresults -notes -html -goroot -http -server -analysis -templates -url -zip"
+      COMPREPLY=($(compgen -W "$cand" -- ${cur}))
+      ;;
+    *)
+      compopt -o nospace
+      cand=`find $GOROOT/src -mindepth 1 -maxdepth 2 -type d |cut -d/ -f$(( ${root_sn}+2 ))-`
+      cand+=`find $GOPATH/src -mindepth 2 -maxdepth 3 -type d |cut -d/ -f$(( ${path_sn}+2 ))-`
+      COMPREPLY=($(compgen -W "$cand" -S "/" -- ${cur}))
       ;;
   esac
-  if [ "x$cand" = "x" ] ; then
-    COMPREPLY=($(compgen -f -- ${cur}))
-  else
-    COMPREPLY=($(compgen -W "$cand" -- ${cur}))
-  fi
 }
 
 complete -o filenames -o bashdefault -F _go_complete go
 complete -o filenames -o bashdefault -F _go_complete goapp
-complete -o filenames -o bashdefault -F _godoc_complete godoc
+complete -o filenames -o default -F _godoc_complete godoc
